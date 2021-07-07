@@ -3,6 +3,12 @@ import requests
 import json
 from bs4 import BeautifulSoup as bs
 from collections import defaultdict
+
+
+
+#TODO 저축기간에 따라(6,12,24,36), 적립 방식에 따라(정액적립,자유적립), 시중은행, 저축은행, 모두냐에 따라
+# 분리해서 searching할 수 있는 자료구조 생각
+
 def from_user():
     money = ""
     while True:
@@ -29,12 +35,14 @@ def interest_cal(money, save_trm, intr_rate, rsrv_type, Tax_type='normal'):
         # 이자(단리): 월납입금 * n(n+1)/2 * r/12
         origin_interest = money * save_trm * (save_trm + 1) / 2 * (intr_rate / 12)
     elif rsrv_type == 'F':
-        # result = (m * (1 + r / 12) * ((1 + r / 12) ** n - 1) / (r / 12)) - (m * n)
+        # 이자(복리): (월납입금 * (1 + r / 12) * ((1 + r / 12) ** n - 1) / (r / 12)) - (월납입금 * n)
         origin_interest = (money * (1 + intr_rate / 12) * ((1 + intr_rate / 12) ** save_trm - 1) / (intr_rate / 12)) - (money * save_trm)
     if Tax_type == 'normal':
         interest = origin_interest * 0.846
     if Tax_type == 'non_Tax':
         interest = origin_interest
+    if Tax_type == 'tax preferential':
+        interest = origin_interest * 0.905
     return int(interest)
 #사용법: intr=interest_cal(100000,24,0.02,' s ')
 if __name__ == "__main__":
@@ -85,6 +93,22 @@ if __name__ == "__main__":
                 break
     api_end=time.time()
     print(f'api따오는데 걸리는 시간:{api_end-api_start} 초')
-    print(Total_bank_info[1]['spcl_cnd'])
-    # for n in Total_bank_info.keys():
-    #     print(len(Total_bank_info[n]['option']))
+    print(Total_bank_info[1])
+    i=1
+    write_start=time.time()
+    with open('bank_file.txt','w',encoding='UTF-8') as bank_file:
+       for n in Total_bank_info.keys():
+          for key,value in Total_bank_info[n].items():
+              if key=='option':
+                  for sub_opt in value:
+                      bank_file.write(f'{"-"*60}\n')
+                      for opt_k,opt_val in sub_opt.items():
+                          bank_file.write(f'{opt_k}:{opt_val}\n')
+              else:
+                  bank_file.write(f'{key}:{value}\n')
+          bank_file.write(f'{"*"*60}\n')
+          # if n>10:
+          #     break
+          # # print(len(Total_bank_info[n]['option']))
+    write_end = time.time()
+    print(f'쓰는데 {write_end-write_start}초 걸립니다. ' )
