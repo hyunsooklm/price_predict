@@ -7,7 +7,6 @@ from collections import defaultdict
 def parse_PhoneNumber(string):
     global local_num
     string=string.replace('-','')
-    print(f'string:{string} len(string):{len(string)}')
     if len(string)==8:
         phone_number=string[:4]+'-'+string[4:]
         if not string.startswith('1'):
@@ -59,7 +58,8 @@ if __name__=="__main__":
             else:
                 print('Http error occur!\n')
                 break
-        for key,value in Total_bank_info.items():
-            number_string=Total_bank_info[key]['cal_tel']
-            Total_bank_info[key]['cal_tel']=parse_PhoneNumber(number_string)
-            print(value)
+        with open('phonenumber.txt','w',encoding='UTF-8') as writer:
+            for key,value in Total_bank_info.items():
+                number_string=Total_bank_info[key]['cal_tel']
+                Total_bank_info[key]['cal_tel']=parse_PhoneNumber(number_string)
+                writer.write(f'{Total_bank_info[key]["fin_co_no"]} {Total_bank_info[key]["kor_co_nm"]}: url: {Total_bank_info[key]["homp_url"]}, phonenumber:{Total_bank_info[key]["cal_tel"]}\n')
