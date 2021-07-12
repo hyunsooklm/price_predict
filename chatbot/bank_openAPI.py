@@ -76,6 +76,11 @@ if __name__ == "__main__":
                         if base.name==None:
                             continue
                         Total_bank_info[num][base.name.replace("\n","")]=base.text #base.name은 태그명, base.text는 태그 안 str
+                    subm_day=Total_bank_info[num]['fin_co_subm_day']
+                    try:
+                        Total_bank_info[num]['fin_co_subm_day']=subm_day[:4]+'-'+subm_day[4:6]+'-'+subm_day[6:8]
+                    except:
+                        pass
                     Total_bank_info[num]['option']=[]
                     for option in ops:
                         sub_opt=dict()
@@ -94,35 +99,35 @@ if __name__ == "__main__":
                 break
     api_end=time.time()
     print(f'api따오는데 걸리는 시간:{api_end-api_start} 초')
-    i=1
-    cal_start=time.time()
-    max_intr=-1
-    max_item=""
-    for n,item in Total_bank_info.items():
-        bankset.add(item['kor_co_nm'])
-        if item['max_limit'] and int(item['max_limit'])<money:
-            continue
-        for opt in item['option']:
-            if opt['rsrv_type']!=rsrv_type or int(opt['save_trm'])!=term: #적립유형/기간/
-                # print(opt['rsrv_type'],rsrv_type,opt['save_trm'],term)
-                continue
-            print(opt['rsrv_type'],rsrv_type,opt['save_trm'],term)
-            intr_rate_type=opt['intr_rate_type']
-            save_trm=int(opt['save_trm'])
-            intr_rate=float(opt['intr_rate'])/100
-            interest=interest_cal(money,save_trm, intr_rate, opt['rsrv_type'])
-            if interest>max_intr:
-                max_intr=interest
-                max_item=(item,opt)
-                print(item['fin_prdt_nm'], opt['save_trm'])
-            # print(opt)
-    cal_end = time.time()
-    item=max_item[0]
-    opt=max_item[1]
-    print(f'쓰는데 {cal_end-cal_start}초 걸립니다. ' )
-    print(f'''최적의 아이템은 {item["kor_co_nm"]}의 {item["fin_prdt_nm"]} 금리는 {opt["intr_rate_type"]} {opt["intr_rate"]} 이자는 {max_intr}, 기간:{opt["save_trm"]} '
-          월 최대한도:{item["max_limit"]}''')
-    print(len(bankset))
-    print(bankset)
-    # print(interest_cal(money,12, 0.02200000000002, 's'))
-    # money, save_trm, intr_rate, rsrv_type, Tax_type='normal'):
+    # for n,item in Total_bank_info.items():
+    #     print(f'제출일: {item["fin_co_subm_day"]}')
+    # # i=1
+    # cal_start=time.time()
+    # max_intr=-1
+    # max_item=""
+    # for n,item in Total_bank_info.items():
+    #     bankset.add(item['kor_co_nm'])
+    #     if item['max_limit'] and int(item['max_limit'])<money:
+    #         continue
+    #     for opt in item['option']:
+    #         if opt['rsrv_type']!=rsrv_type or int(opt['save_trm'])!=term: #적립유형/기간/
+    #             # print(opt['rsrv_type'],rsrv_type,opt['save_trm'],term)
+    #             continue
+    #         print(opt['rsrv_type'],rsrv_type,opt['save_trm'],term)
+    #         intr_rate_type=opt['intr_rate_type']
+    #         save_trm=int(opt['save_trm'])
+    #         intr_rate=float(opt['intr_rate'])/100
+    #         interest=interest_cal(money,save_trm, intr_rate, opt['rsrv_type'])
+    #         if interest>max_intr:
+    #             max_intr=interest
+    #             max_item=(item,opt)
+    #             print(item['fin_prdt_nm'], opt['save_trm'])
+    #         # print(opt)
+    # cal_end = time.time()
+    # item=max_item[0]
+    # opt=max_item[1]
+    # print(f'쓰는데 {cal_end-cal_start}초 걸립니다. ' )
+    # print(f'''최적의 아이템은 {item["kor_co_nm"]}의 {item["fin_prdt_nm"]} 금리는 {opt["intr_rate_type"]} {opt["intr_rate"]} 이자는 {max_intr}, 기간:{opt["save_trm"]} '
+    #       월 최대한도:{item["max_limit"]}''')
+    # print(len(bankset))
+    # print(bankset)

@@ -12,7 +12,7 @@
 0010927 국민은행: url: http://www.kbstar.com, phonenumber:1588-9999
 0011625 신한은행: url: http://www.shinhan.com, phonenumber:1577-8000
 0013175 농협은행주식회사: url: https://banking.nonghyup.com, phonenumber:1661-3000
-0013909 하나은행: url: http://www.kebhana.com, phonenumber:1599-1111
+0013909 하나은행: url: http://www.kebhana.com, phonenumber:1599-1111smart-i 정기적금
 0014674 주식회사 케이뱅크은행: url: https://ib.kbanknow.com/ib20/mnu/FPMDPT010000, phonenumber:1522-1000
 0014807 수협은행: url: http://www.suhyup-bank.com, phonenumber:1588-1515
 0015130 주식회사 카카오뱅크: url: https://www.kakaobank.com/, phonenumber:1599-3333
