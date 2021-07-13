@@ -3,6 +3,8 @@ import requests
 import json
 from bs4 import BeautifulSoup as bs
 from collections import defaultdict
+from DBConnect import *
+
 
 def parse_PhoneNumber(string):
     global local_num
@@ -17,8 +19,6 @@ def parse_PhoneNumber(string):
             return '02'+'-'+string[2:6]+'-'+string[6:]
         else:
             return string[:3]+'-'+string[3:6]+'-'+string[6:]
-
-
 
 
 
@@ -58,8 +58,14 @@ if __name__=="__main__":
             else:
                 print('Http error occur!\n')
                 break
-        with open('phonenumber.txt','w',encoding='UTF-8') as writer:
-            for key,value in Total_bank_info.items():
-                number_string=Total_bank_info[key]['cal_tel']
-                Total_bank_info[key]['cal_tel']=parse_PhoneNumber(number_string)
-                writer.write(f'{Total_bank_info[key]["fin_co_no"]} {Total_bank_info[key]["kor_co_nm"]}: url: {Total_bank_info[key]["homp_url"]}, phonenumber:{Total_bank_info[key]["cal_tel"]}\n')
+    for key,value in Total_bank_info.items():
+        cal_tel=parse_PhoneNumber(Total_bank_info[key]['cal_tel'])
+        dcls_chrg_man=Total_bank_info[key]['dcls_chrg_man']
+        fin_co_no=Total_bank_info[key]['fin_co_no']
+        homp_url=Total_bank_info[key]['homp_url']
+        kor_co_nm=Total_bank_info[key]['kor_co_nm']
+        sql='''INSERT INTO bankinfo.bankinfo(`fin_co_no`,`kor_co_nm`,`dcls_chrg_man`,`homp_url`,`cal_tel`)
+        VALUES(%s,%s,%s,%s,%s);'''
+        with db.cursor() as cursor:
+            cursor.execute(sql,(fin_co_no,kor_co_nm,dcls_chrg_man,homp_url,cal_tel))
+    db.commit()
