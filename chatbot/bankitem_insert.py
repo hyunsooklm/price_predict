@@ -53,8 +53,7 @@ def get_items():
                             base.name.replace("\n", "")] = base.text  # base.name은 태그명, base.text는 태그 안 str
                     subm_day = Total_bank_info[num]['fin_co_subm_day']
                     try:
-                        Total_bank_info[num]['fin_co_subm_day'] = subm_day[:4] + '-' + subm_day[4:6] + '-' + subm_day[
-                                                                                                             6:8]
+                        Total_bank_info[num]['fin_co_subm_day'] = subm_day[:4] + '-' + subm_day[4:6] + '-' + subm_day[6:8]
                     except:
                         pass
                     Total_bank_info[num]['option'] = []
@@ -74,7 +73,7 @@ def get_items():
                 print('Http error occur!\n')
                 break
     return Total_bank_info
-def insertbank_item(Total_bank_info):
+def insertbank_item(Total_bank_info,db):
     for n,item in Total_bank_info.items():
         for op in item['option']:
             sql='''INSERT INTO bankinfo.bank_item(`fin_co_no`,`kor_co_nm`,`fin_prdt_cd`,`fin_prdt_nm`,`join_way`,
@@ -95,12 +94,12 @@ def insertbank_item(Total_bank_info):
             VALUES
             (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);
             '''
-            with db.cursor() as cursor:
-                cursor.execute(sql,(item['fin_co_no'],item['kor_co_nm'],item['fin_prdt_cd'],item['fin_prdt_nm'],item['join_way'],
+            ok=db.execute(sql,(item['fin_co_no'],item['kor_co_nm'],item['fin_prdt_cd'],item['fin_prdt_nm'],item['join_way'],
                 item['mtrt_int'],item['spcl_cnd'],item['join_deny'],item['join_member'],item['etc_note'],item['max_limit'],
                 item['fin_co_subm_day'],op['intr_rate_type'],op['intr_rate_type_nm'],op['rsrv_type'],op['rsrv_type_nm'],op['save_trm'],op['intr_rate'],
                 op['intr_rate2']))
     db.commit()
+
 if __name__ == "__main__":
     Total_bank_info=get_items()
     insertbank_item(Total_bank_info)

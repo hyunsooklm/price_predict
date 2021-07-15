@@ -1,6 +1,4 @@
-import time
 import requests
-import json
 from bs4 import BeautifulSoup as bs
 from collections import defaultdict
 from DBConnect import *
@@ -21,20 +19,22 @@ def parse_PhoneNumber(string):
             return string[:3]+'-'+string[3:6]+'-'+string[6:]
 
 
-def insertbankinfo(Total_bank_info):
-    for key,value in Total_bank_info.items():
-        cal_tel=parse_PhoneNumber(Total_bank_info[key]['cal_tel'])
-        dcls_chrg_man=Total_bank_info[key]['dcls_chrg_man']
-        fin_co_no=Total_bank_info[key]['fin_co_no']
-        homp_url=Total_bank_info[key]['homp_url']
-        kor_co_nm=Total_bank_info[key]['kor_co_nm']
-        sql='''INSERT INTO bankinfo.bankinfo(`fin_co_no`,`kor_co_nm`,`dcls_chrg_man`,`homp_url`,`cal_tel`)
+def insertbankinfo(Total_bank_info,db):
+    # global db
+    print(Total_bank_info)
+    for key, value in Total_bank_info.items():
+        cal_tel = parse_PhoneNumber(Total_bank_info[key]['cal_tel'])
+        dcls_chrg_man = Total_bank_info[key]['dcls_chrg_man']
+        fin_co_no = Total_bank_info[key]['fin_co_no']
+        homp_url = Total_bank_info[key]['homp_url']
+        kor_co_nm = Total_bank_info[key]['kor_co_nm']
+        sql = '''INSERT INTO bankinfo.bankinfo(`fin_co_no`,`kor_co_nm`,`dcls_chrg_man`,`homp_url`,`cal_tel`)
         VALUES(%s,%s,%s,%s,%s);'''
 
-        with db.cursor() as cursor:
-            cursor.execute(sql,(fin_co_no,kor_co_nm,dcls_chrg_man,homp_url,cal_tel))
+        ok = db.execute(sql, (fin_co_no, kor_co_nm, dcls_chrg_man, homp_url, cal_tel))
+
     db.commit()
-def get_items():
+def get_infos():
     auth_key = 'b555824094d0be01126bc05694f89259'
     bank_code = '020000'
     savebank_code = '030300'
