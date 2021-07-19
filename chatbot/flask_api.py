@@ -15,10 +15,12 @@ def hello():
 
 @application.route("/DB/apiinfoget",methods=['GET'])
 def apiinfoget():
+    global db
     sql = 'truncate bankinfo.bankinfo'
     db.execute(sql)
     db.commit()
     Total_bank_info = get_infos()
+    print(Total_bank_info)
     insertbankinfo(Total_bank_info,db)
     return "infoinsert"
 
@@ -28,56 +30,38 @@ def apiitemget():
     db.execute(sql)
     db.commit()
     Total_bank_items = get_items()
+    print(Total_bank_items)
     insertbank_item(Total_bank_items,db)
+    sql='update bankinfo.bank_item set max_limit=%s where max_limit=%s or max_limit=%s'
+    db.execute(sql,('1000000000','','0'))
+    db.commit()
     return "iteminsert"
 
-
 @application.route("/DB/itemget",methods=['POST'])
-def getitem():
+def itemget():
+    global db
     if request.method == 'POST':
         params=request.get_json()
-        money=params['money']
+        money=int(params['money'])
         intr_rate_type=params['intr_rate_type']
-        save_trm=params['save_trm']
+        save_trm=int(params['save_trm'])
         sql="select * from bankinfo.bank_item where max_limit>=%s and intr_rate_type=%s and save_trm=%s"
         rows=db.executeAll(sql,(money,intr_rate_type,save_trm))
-        for r in rows:
-            print(r['max_limit'], r['intr_rate_type'],r['save_trm'])
-        return 'done'
-
-@application.route("/DB", methods=['POST'])
-def select():
-    if request.method == 'POST':
-        params = request.get_json()
-        name = params['name']
-        sql = "select * from test.book where name=%s;"
-        row = db.executeAll(sql, name)
-        for r in row:
-            print(r['num'] + 100)
-        return {"result": row}
-    else:
-        return None
-
-
-@application.route("/DB/insert", methods=['POST'])
-def insert():
-    if request.method == 'POST':
-        print('post')
-        # db = Database()
-        print(request.is_json)
-        params = request.get_json()
-        book = params["book"]
-        name = params["name"]
-        num = int(params["num"])
-        print(f'book{book} ,name:{name}, num:{num}')
-        db = Database()
-        sql = f'INSERT INTO `test`.`book`(`book`,`name`,`num`) VALUES(%s,%s,%s);'
-        ok = db.execute(sql, (book, name, num))
-        db.commit()
-        db.close()
-    else:
-        return None
-
+        # max_intr=-1
+        # max_intr2=-1
+        # for r in rows:
+        #     intr_rate=float(r['intr_rate'])
+        #     intr_rate2=float(r['intr_rate2'])
+        #     intr_rate_type=r['intr_rate_type']
+        #     intr_money=interest_cal(money, save_trm, intr_rate, intr_rate_type)
+        #     intr_money2=interest_cal(money, save_trm, intr_rate2, intr_rate_type)
+        #     if max_intr<intr_money:
+        #         max_intr=intr_money
+        #         max_intr_item=r
+        #     if max_intr2<intr_money2:
+        #         max_intr2 = intr_money2
+        #         max_intr_item2 = r
+        return {"result":len(rows)}
 
 if __name__ == "__main__":
     # print(sys.argv)

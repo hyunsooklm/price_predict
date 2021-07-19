@@ -7,13 +7,13 @@ from DBConnect import *
 
 #TODO 현재 MYSQL DB에 정보 모두 넣어놨음.
 
-def interest_cal(money, save_trm, intr_rate, rsrv_type, Tax_type='normal'):
+def interest_cal(money, save_trm, intr_rate, intr_rate_type, Tax_type='normal'):
     interest = -1
-    rsrv_type=rsrv_type.upper().strip()
-    if rsrv_type == 'S':
+    intr_rate_type=intr_rate_type.upper().strip()
+    if intr_rate_type == 'S':
         # 이자(단리): 월납입금 * n(n+1)/2 * r/12
         origin_interest = money * save_trm * (save_trm + 1) / 2 * (intr_rate / 12)
-    elif rsrv_type == 'F':
+    elif intr_rate_type == 'F':
         # 이자(복리): (월납입금 * (1 + r / 12) * ((1 + r / 12) ** n - 1) / (r / 12)) - (월납입금 * n)
         origin_interest = (money * (1 + intr_rate / 12) * ((1 + intr_rate / 12) ** save_trm - 1) / (intr_rate / 12)) - (money * save_trm)
     if Tax_type == 'normal':
