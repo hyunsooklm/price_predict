@@ -417,7 +417,7 @@ def Predict_Gimjang():
         {'Date': PREDICT_baechu['Date'], 'Origin_Sum': original_price, 'Predict_Sum': predict_price})
     print(PREDICT_GIMJANG)
     print('predict gimjang Done')
-
+    return PREDICT_GIMJANG
 app = Flask(__name__)
 # 메인 페이지 라우팅
 @app.route("/")
@@ -446,7 +446,7 @@ def result():
         predict()
         make_predict_df()
         make_nonPredict_price()
-        Predict_Gimjang()
+        PREDICT_GIMJANG=Predict_Gimjang()
 
         return flask.render_template('index.html')
 
