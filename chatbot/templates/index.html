@@ -34,9 +34,7 @@
       <nav class="navbar navbar-expand-lg navbar-dark d-none d-lg-block" style="z-index: 2000;">
         <div class="container-fluid">
           <!-- Navbar brand -->
-          <a class="navbar-brand nav-link" target="_blank" href="https://mdbootstrap.com/docs/standard/">
             <strong>김장철 김장비용 예측서비스</strong>
-          </a>
           <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarExample01"
             aria-controls="navbarExample01" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars"></i>
@@ -124,32 +122,32 @@
   
                     <!-- Default input -->
                     <div class="form-group">
-                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 배추 가격 xlsx </label>
+                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 배추 데이터 xlsx </label>
                         <input style="font-family: 'Nanum Barun Gothic'" type="file" name="baechu" class="form-control" id="formGroupExampleInput">
                     </div>
                     <!-- Default input -->
                     <div class="form-group">
-                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 무 가격 xlsx </label>
+                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 무 데이터 xlsx </label>
                       <input style="font-family: 'Nanum Barun Gothic'" type="file" name="muu" class="form-control" id="formGroupExampleInput">
                     </div>
                   <!-- Default input -->
                    <div class="form-group">
-                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 건고추 가격 xlsx </label>
+                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 건고추 데이터 xlsx </label>
                       <input style="font-family: 'Nanum Barun Gothic'" type="file" name="gochu" class="form-control" id="formGroupExampleInput">
                   </div>
                   <!-- Default input -->
                   <div class="form-group">
-                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 마늘 가격 xlsx </label>
+                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 마늘 데이터 xlsx </label>
                     <input style="font-family: 'Nanum Barun Gothic'" type="file" name="manl" class="form-control" id="formGroupExampleInput">
                 </div>
                   <!-- Default input -->
                   <div class="form-group">
-                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 대파 가격 xlsx </label>
+                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 대파 데이터 xlsx </label>
                     <input style="font-family: 'Nanum Barun Gothic'" type="file" name="defa" class="form-control" id="formGroupExampleInput">
                 </div>
                 <!-- Default input -->
                 <div class="form-group">
-                  <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 쪽파 가격 xlsx </label>
+                  <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 쪽파 데이터 xlsx </label>
                   <input style="font-family: 'Nanum Barun Gothic'" type="file" name="jjokpa" class="form-control" id="formGroupExampleInput">
               </div>
           <!-- Default form group -->
@@ -166,41 +164,58 @@
         <hr class="my-5" />
 
         <!--Section: Content-->
-<!--        <section class="mb-5">-->
-<!--          <h4 class="mb-5 text-center"><strong>향 후 4주간의 김장비용 예측 결과</strong></h4>-->
+        <section class="mb-5">
+          <h4 class="mb-5 text-center"><strong>향 후 4주간의 김장비용 예측 결과</strong></h4>
 
-<!--          <div class="row d-flex justify-content-center">-->
-<!--            <div class="col-md-6">-->
-<!--              <form action="/" method="post">-->
-<!--                &lt;!&ndash; Default form group &ndash;&gt;-->
-<!--  -->
-<!--                    &lt;!&ndash; Default input &ndash;&gt;-->
-<!--                    <div class="form-group">-->
-<!--                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">평균 온도</label>-->
-<!--                        <input style="font-family: 'Nanum Barun Gothic'" type="text" name="avg_temp" class="form-control" id="formGroupExampleInput" placeholder="평균 온도를 입력하세요.">-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash; Default input &ndash;&gt;-->
-<!--                    <div class="form-group">-->
-<!--                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">최소 온도</label>-->
-<!--                        <input style="font-family: 'Nanum Barun Gothic'" type="text" name="min_temp" class="form-control" id="formGroupExampleInput" placeholder="최소 온도를 입력하세요.">-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash; Default input &ndash;&gt;-->
-<!--                    <div class="form-group">-->
-<!--                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">최대 온도</label>-->
-<!--                        <input style="font-family: 'Nanum Barun Gothic'" type="text" name="max_temp" class="form-control" id="formGroupExampleInput" placeholder="최대 온도를 입력하세요.">-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash; Default input &ndash;&gt;-->
-<!--                    <div class="form-group">-->
-<!--                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">강수량</label>-->
-<!--                        <input style="font-family: 'Nanum Barun Gothic'" type="text" name="rain_fall" class="form-control" id="formGroupExampleInput" placeholder="강수량을 입력하세요.">-->
-<!--                    </div>-->
-<!--                &lt;!&ndash; Default form group &ndash;&gt;-->
-<!--                <button style="font-family: 'Nanum Barun Gothic' !important;" type="submit" class="btn btn-primary btn-md pull-right">예측하기</button>-->
-<!--                    </form>-->
-
-<!--            </div>-->
-<!--          </div>-->
-<!--        </section>-->
+          <div class="row d-flex justify-content-center">
+            <div class="col-md-6">
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+                <canvas id="lineChart" width="700" height="400"></canvas>
+                <script>
+                    var ctx=document.getElementById("lineChart").getContext('2d')
+                    var lineChart=new Chart(ctx,{
+                        type:"line",
+                        data:{
+                            labels:{{labels | safe }},
+                            datasets:[
+                                {
+                                    label: '실제 김장비용',
+                                    data:{{Origin_price | safe}},
+                                    fill: false,
+                                    borderColor: "rgb(54, 162, 235)",
+                                    lineTension:0.01
+                                }
+                            ]
+                        },
+                        option:{
+                            responsive: false
+                        }
+                        });
+                    </script>
+                <script>
+                    var ctx=document.getElementById("lineChart").getContext('2d')
+                    var lineChart=new Chart(ctx,{
+                        type:"line",
+                        data:{
+                            labels:{{labels | safe }},
+                            datasets:[
+                                {
+                                    label: '예측 김장비용',
+                                    data:{{Predict_price | safe}},
+                                    fill: false,
+                                    borderColor: "rgb(255, 99, 132)",
+                                    lineTension:0.01
+                                }
+                            ]
+                        },
+                        option:{
+                            responsive: false
+                        }
+                        });
+                </script>
+            </div>
+          </div>
+        </section>
         <!--Section: Content-->
       </div>
     </main>

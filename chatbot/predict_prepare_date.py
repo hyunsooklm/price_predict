@@ -448,7 +448,15 @@ def result():
         make_nonPredict_price()
         PREDICT_GIMJANG=Predict_Gimjang()
 
-        return flask.render_template('index.html')
+        # PREDICT_GIMJANG
+        labels = PREDICT_GIMJANG['Date'].astype('str')
+        Origin_price = PREDICT_GIMJANG['Origin_Sum'].astype('int')
+        Predict_price = PREDICT_GIMJANG['Predict_Sum'].astype('int')
+        labels = labels.tolist()
+        Origin_price=Origin_price.tolist()
+        Predict_price=Predict_price.tolist()
+
+        return flask.render_template('index.html',labels=labels,Origin_price=Origin_price,Predict_price=Predict_price)
 
 
 if __name__=='__main__':
