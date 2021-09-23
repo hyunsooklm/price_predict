@@ -1,4 +1,9 @@
 import pandas as pd
+import zipfile
+import os
+from flask import send_file,url_for,redirect
+import shutil
+
 from tensorflow.keras.models import load_model
 from sklearn.preprocessing import StandardScaler
 import numpy as np
@@ -418,6 +423,52 @@ def Predict_Gimjang():
     print(PREDICT_GIMJANG)
     print('predict gimjang Done')
     return PREDICT_GIMJANG
+
+def Gimjang_Total():
+    gat_price=gat_df['gimjang'].tolist()
+    gool_price=gool_df['gimjang'].tolist()
+    minari_price=minari_df['gimjang'].tolist()
+    myulchi_price=myulchi_df['gimjang'].tolist()
+    senggang_price=senggang_df['gimjang'].tolist()
+    seu_price=seu_df['gimjang'].tolist()
+    sogm_price=sogm_df['gimjang'].tolist()
+
+    PREDICT_GIMJANG_TOTAL = pd.DataFrame({'Date':PREDICT_baechu['Date']})
+    PREDICT_GIMJANG_TOTAL
+    predict_baechu=PREDICT_baechu['gimjang'].tolist()
+    predict_muu=PREDICT_muu['gimjang'].tolist()
+    predict_gochu=PREDICT_gochu['gimjang'].tolist()
+    predict_manl=PREDICT_manl['gimjang'].tolist()
+    predict_defa=PREDICT_defa['gimjang'].tolist()
+    predict_jjokpa=PREDICT_jjokpa['gimjang'].tolist()
+
+    # senggang_price=senggang_price,seu_price=seu_price,sogm_price=sogm_price
+    PREDICT_GIMJANG_TOTAL=PREDICT_GIMJANG_TOTAL.assign(baechu=predict_baechu,muu=predict_muu,gochu=predict_gochu,manl=predict_manl,defa=predict_defa,jjokpa=predict_jjokpa,gat_price=gat_price,gool_price=gool_price,minari_price=minari_price,myulchi_price=myulchi_price,senggang_price=senggang_price,seu_price=seu_price,sogm_price=sogm_price)
+    PREDICT_GIMJANG_TOTAL=PREDICT_GIMJANG_TOTAL.assign(Total=PREDICT_GIMJANG['Predict_Sum'].tolist())
+    PREDICT_GIMJANG_TOTAL
+
+    original_GIMJANG_TOTAL = pd.DataFrame({'Date':original_baechu['day']})
+    original_GIMJANG_TOTAL
+    Ori_baechu=original_baechu['gimjang'].tolist()
+    Ori_muu=original_muu['gimjang'].tolist()
+    Ori_gochu=original_gochu['gimjang'].tolist()
+    Ori_manl=original_manl['gimjang'].tolist()
+    Ori_defa=original_defa['gimjang'].tolist()
+    Ori_jjokpa=original_jjokpa['gimjang'].tolist()
+    original_GIMJANG_TOTAL=original_GIMJANG_TOTAL.assign(baechu=Ori_baechu,muu=Ori_muu,gochu=Ori_gochu,manl=Ori_manl,defa=Ori_defa,jjokpa=Ori_jjokpa,gat_price=gat_price,gool_price=gool_price,minari_price=minari_price,myulchi_price=myulchi_price,senggang_price=senggang_price,seu_price=seu_price,sogm_price=sogm_price)
+    original_GIMJANG_TOTAL=original_GIMJANG_TOTAL.assign(Total=PREDICT_GIMJANG['Origin_Sum'].tolist())
+
+    TOTAL_SAVE_PATH='./summary/'
+    if not os.path.isdir(TOTAL_SAVE_PATH):
+        os.mkdir(TOTAL_SAVE_PATH)
+    else:
+        shutil.rmtree((TOTAL_SAVE_PATH))
+        os.mkdir(TOTAL_SAVE_PATH)
+    PREDICT_GIMJANG_TOTAL.to_excel(TOTAL_SAVE_PATH+'PPEDICT_GIMJANG_TOTAL.xlsx',index=False)
+    original_GIMJANG_TOTAL.to_excel(TOTAL_SAVE_PATH + 'original_GIMJANG_TOTAL.xlsx',index=False)
+    # return PREDICT_GIMJANG_TOTAL,original_GIMJANG_TOTAL
+
+
 app = Flask(__name__)
 # 메인 페이지 라우팅
 @app.route("/")
@@ -447,6 +498,7 @@ def result():
         make_predict_df()
         make_nonPredict_price()
         PREDICT_GIMJANG=Predict_Gimjang()
+        Gimjang_Total()
 
         # PREDICT_GIMJANG
         labels = PREDICT_GIMJANG['Date'].astype('str')
@@ -458,6 +510,26 @@ def result():
 
         return flask.render_template('index.html',labels=labels,Origin_price=Origin_price,Predict_price=Predict_price)
 
+@app.route('/download_all')
+def download_all():
+    try:
+        os.remove('summary.zip')
+    except OSError:
+        pass
+    if os.path.isdir('./summary'):
+        zipf = zipfile.ZipFile('summary.zip','w', zipfile.ZIP_DEFLATED)
+        for root,dirs, files in os.walk('./summary/'):
+            for file in files:
+                zipf.write('./summary/'+file)
+                #1. summary 채워주고 2. 여기와서 summary에 있는거 zip만들고 리턴, 없는데 오면 return
+        zipf.close()
+        shutil.rmtree('./summary')
+        return send_file('summary.zip',
+                mimetype = 'zip',
+                attachment_filename= 'summary.zip',
+                as_attachment = True)
+    else:
+        return redirect(url_for('home'))
 
 if __name__=='__main__':
     loading_model()
