@@ -68,9 +68,25 @@ def make_set_Scaler(df):
     price_scaler.fit_transform(df_numpy[:, [-1]])  # price_Scaler
 
     return df_numpy_scaled, price_scaler  # return (scaling_df, price_scaler)
+def mdf(df_copy,xls,name):
+    # print(name)
+    # print(df_copy.info())
+    # print(xls.info())
+    xls.reset_index(inplace=True)
+    xls.head()
+    for n in reversed(range(len(xls))):
+        date = xls.iloc[n]['day']
+        for i in reversed(range(len(df_copy))):
+            d2 = df_copy.iloc[i]['day']
+            if d2 == date:
+                print(date)
+                df_copy.iloc[i] = xls.iloc[n]
+                break
+    # df_copy.to_excel(f'Test/{name}')
 
-def make_df():      #df만들기
+def make_df(xls_list):      #df만들기
     global baechu_df,muu_df,manl_df,gochu_df,defa_df,jjokpa_df
+    global baechu_df_copy,muu_df_copy,manl_df_copy,gochu_df_copy,defa_df_copy,jjokpa_df_copy
     baechu_df = pd.read_excel(DF_Directory+'baechu.xlsx')
     muu_df = pd.read_excel(DF_Directory+'muu.xlsx')
     manl_df = pd.read_excel(DF_Directory+'manl.xlsx')
@@ -85,6 +101,11 @@ def make_df():      #df만들기
     defa_df_copy=defa_df[:]
     jjokpa_df_copy=jjokpa_df[:]
 
+    df_copy_list=[baechu_df_copy,muu_df_copy,manl_df_copy,gochu_df_copy,defa_df_copy,jjokpa_df_copy]
+    a=['baechu.xlsx','muu.xlsx','manl.xlsx','gochu.xlsx','defa.xlsx','jjokpa.xlsx']
+    for df_copy,xls,name in zip(df_copy_list,xls_list,a):
+        mdf(df_copy,xls,name)
+    #############################################copy와 list들 조합해야겠구만!
     #day => index로 변환하기(원본따로)
     baechu_df_copy.set_index('day',inplace=True)
     muu_df_copy.set_index('day',inplace=True)
@@ -479,20 +500,47 @@ def home():
 @app.route('/result',methods=['POST','GET'])
 def result():
     if request.method=='POST':
-        f = request.files['baechu']
+        baechu = request.files['baechu']
+        muu=request.files['muu']
+        manl=request.files['manl']
+        gochu=request.files['gochu']
+        defa=request.files['defa']
+        jjokpa=request.files['jjokpa']
 
+        print('files ok!\n')
         upload_path='uploads'
         if os.path.exists(upload_path):
-            for file in os.scandir(upload_path):
-                os.remove(file.path)
-        else:
-            os.mkdir(upload_path)
-        f.save(f'./uploads/{secure_filename(f.filename)}')
-        data_xls = pd.read_excel(f'uploads/{secure_filename(f.filename)}')
-        last_Day=make_last_Day(data_xls)
-        print(f'last_Day:{last_Day}')
-        del f
+            shutil.rmtree(upload_path)
+        os.mkdir(upload_path)
+        baechu.save(f'./uploads/{secure_filename(baechu.filename)}')
+        muu.save(f'./uploads/{secure_filename(muu.filename)}')
+        manl.save(f'./uploads/{secure_filename(manl.filename)}')
+        gochu.save(f'./uploads/{secure_filename(gochu.filename)}')
+        defa.save(f'./uploads/{secure_filename(defa.filename)}')
+        jjokpa.save(f'./uploads/{secure_filename(jjokpa.filename)}')
 
+        baechu_xls = pd.read_excel(f'uploads/{secure_filename(baechu.filename)}',index_col=None)
+        muu_xls = pd.read_excel(f'uploads/{secure_filename(muu.filename)}',index_col=None)
+        manl_xls = pd.read_excel(f'uploads/{secure_filename(manl.filename)}',index_col=None)
+        gochu_xls = pd.read_excel(f'uploads/{secure_filename(gochu.filename)}',index_col=None)
+        defa_xls = pd.read_excel(f'uploads/{secure_filename(defa.filename)}',index_col=None)
+        jjokpa_xls = pd.read_excel(f'uploads/{secure_filename(jjokpa.filename)}',index_col=None)
+
+        print(baechu_xls.info())
+        xls_list=[baechu_xls,muu_xls,manl_xls,gochu_xls,defa_xls,jjokpa_xls]
+
+        last_Day=make_last_Day(baechu_xls)
+        print(f'last_Day:{last_Day}')
+        del baechu
+        del muu
+        del gochu
+        del manl
+        del jjokpa
+        del defa
+
+        # print(baechu_xls.info())
+        # print(baechu_xls.head())
+        make_df(xls_list)
         make_Predict_parameter(last_Day)
         predict()
         make_predict_df()
@@ -533,16 +581,4 @@ def download_all():
 
 if __name__=='__main__':
     loading_model()
-    make_df()
     app.run(debug=True)
-    # loading_model()
-    # make_df()
-    # last_Day=make_last_Day()    #이부분만 수정하면 됨 => 받고 아래 진행
-    #---------------------------------------------------------------------------------#
-
-
-    # make_Predict_parameter(last_Day)
-    # predict()
-    # make_predict_df()
-    # make_nonPredict_price()
-    # Predict_Gimjang()
