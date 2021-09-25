@@ -114,43 +114,43 @@
 
         <!--Section: Content-->
         <section class="text-center">
-          <h4 class="mb-5 text-center"><strong>50일간의 농산물 가격 데이터 입력</strong></h4>
+          <h4 class="mb-5 text-center"><strong>농산물가격예측</strong></h4>
 
           <div class="row d-flex justify-content-center">
             <div class="col-md-6">
               <form action="/result" method="POST" enctype="multipart/form-data">
                 <!-- Default form group -->
   
-                    <!-- Default input -->
-                    <div class="form-group">
-                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 배추 데이터 xlsx </label>
-                        <input style="font-family: 'Nanum Barun Gothic'" type="file" name="baechu" class="form-control" id="formGroupExampleInput">
-                    </div>
-                    <!-- Default input -->
-                    <div class="form-group">
-                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 무 데이터 xlsx </label>
-                      <input style="font-family: 'Nanum Barun Gothic'" type="file" name="muu" class="form-control" id="formGroupExampleInput">
-                    </div>
-                  <!-- Default input -->
-                   <div class="form-group">
-                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 건고추 데이터 xlsx </label>
-                      <input style="font-family: 'Nanum Barun Gothic'" type="file" name="gochu" class="form-control" id="formGroupExampleInput">
-                  </div>
-                  <!-- Default input -->
-                  <div class="form-group">
-                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 마늘 데이터 xlsx </label>
-                    <input style="font-family: 'Nanum Barun Gothic'" type="file" name="manl" class="form-control" id="formGroupExampleInput">
-                </div>
-                  <!-- Default input -->
-                  <div class="form-group">
-                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 대파 데이터 xlsx </label>
-                    <input style="font-family: 'Nanum Barun Gothic'" type="file" name="defa" class="form-control" id="formGroupExampleInput">
-                </div>
-                <!-- Default input -->
-                <div class="form-group">
-                  <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 쪽파 데이터 xlsx </label>
-                  <input style="font-family: 'Nanum Barun Gothic'" type="file" name="jjokpa" class="form-control" id="formGroupExampleInput">
-              </div>
+<!--                    &lt;!&ndash; Default input &ndash;&gt;-->
+<!--                    <div class="form-group">-->
+<!--                        <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 배추 데이터 xlsx </label>-->
+<!--                        <input style="font-family: 'Nanum Barun Gothic'" type="file" name="baechu" class="form-control" id="formGroupExampleInput">-->
+<!--                    </div>-->
+<!--                    &lt;!&ndash; Default input &ndash;&gt;-->
+<!--                    <div class="form-group">-->
+<!--                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 무 데이터 xlsx </label>-->
+<!--                      <input style="font-family: 'Nanum Barun Gothic'" type="file" name="muu" class="form-control" id="formGroupExampleInput">-->
+<!--                    </div>-->
+<!--                  &lt;!&ndash; Default input &ndash;&gt;-->
+<!--                   <div class="form-group">-->
+<!--                      <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 건고추 데이터 xlsx </label>-->
+<!--                      <input style="font-family: 'Nanum Barun Gothic'" type="file" name="gochu" class="form-control" id="formGroupExampleInput">-->
+<!--                  </div>-->
+<!--                  &lt;!&ndash; Default input &ndash;&gt;-->
+<!--                  <div class="form-group">-->
+<!--                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 마늘 데이터 xlsx </label>-->
+<!--                    <input style="font-family: 'Nanum Barun Gothic'" type="file" name="manl" class="form-control" id="formGroupExampleInput">-->
+<!--                </div>-->
+<!--                  &lt;!&ndash; Default input &ndash;&gt;-->
+<!--                  <div class="form-group">-->
+<!--                    <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 대파 데이터 xlsx </label>-->
+<!--                    <input style="font-family: 'Nanum Barun Gothic'" type="file" name="defa" class="form-control" id="formGroupExampleInput">-->
+<!--                </div>-->
+<!--                &lt;!&ndash; Default input &ndash;&gt;-->
+<!--                <div class="form-group">-->
+<!--                  <label style="font-family: 'Nanum Barun Gothic'" for="formGroupExampleInput">50일간의 쪽파 데이터 xlsx </label>-->
+<!--                  <input style="font-family: 'Nanum Barun Gothic'" type="file" name="jjokpa" class="form-control" id="formGroupExampleInput">-->
+<!--              </div>-->
           <!-- Default form group -->
                 <button style="font-family: 'Nanum Barun Gothic' !important;" type="submit" class="btn btn-primary btn-md pull-right">예측하기</button>
                     </form>
@@ -180,7 +180,7 @@
                             labels:{{labels | safe }},
                             datasets:[
                                 {
-                                    label: '실제 김장비용',
+                                    label: '실제 김장 소요 비용',
                                     data:{{Origin_price | safe}},
                                     fill: false,
                                     borderColor: "rgb(54, 162, 235)",
@@ -215,7 +215,7 @@
                             labels:{{labels | safe }},
                             datasets:[
                                 {
-                                    label: '예측 김장비용',
+                                    label: '인공지능 기반 예측 김장비용',
                                     data:{{Predict_price | safe}},
                                     fill: false,
                                     borderColor: "rgb(255, 99, 132)",

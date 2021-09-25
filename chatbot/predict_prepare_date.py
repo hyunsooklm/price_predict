@@ -84,7 +84,7 @@ def mdf(df_copy,xls,name):
                 break
     # df_copy.to_excel(f'Test/{name}')
 
-def make_df(xls_list):      #df만들기
+def make_df():      #df만들기
     global baechu_df,muu_df,manl_df,gochu_df,defa_df,jjokpa_df
     global baechu_df_copy,muu_df_copy,manl_df_copy,gochu_df_copy,defa_df_copy,jjokpa_df_copy
     baechu_df = pd.read_excel(DF_Directory+'baechu.xlsx')
@@ -102,11 +102,10 @@ def make_df(xls_list):      #df만들기
     jjokpa_df_copy=jjokpa_df[:]
 
     df_copy_list=[baechu_df_copy,muu_df_copy,manl_df_copy,gochu_df_copy,defa_df_copy,jjokpa_df_copy]
-    a=['baechu.xlsx','muu.xlsx','manl.xlsx','gochu.xlsx','defa.xlsx','jjokpa.xlsx']
-    for df_copy,xls,name in zip(df_copy_list,xls_list,a):
-        mdf(df_copy,xls,name)
-    #############################################copy와 list들 조합해야겠구만!
-    #day => index로 변환하기(원본따로)
+    # a=['baechu.xlsx','muu.xlsx','manl.xlsx','gochu.xlsx','defa.xlsx','jjokpa.xlsx']
+    # for df_copy,xls,name in zip(df_copy_list,xls_list,a):
+    #     mdf(df_copy,xls,name)
+    # day => index로 변환하기(원본따로)
     baechu_df_copy.set_index('day',inplace=True)
     muu_df_copy.set_index('day',inplace=True)
     manl_df_copy.set_index('day',inplace=True)
@@ -173,32 +172,28 @@ def make_Predict_parameter(last_Day):
     global predict_date
     try:
         baechu_x_predict_list, baechu_y_predict_list, predict_date = make_X_Predict_list(last_Day, baechu_Xlist,
-                                                                                         baechu_Ylist, baechu_datelist,                                                                                        predict_day=28)
+                                                                                    baechu_Ylist, baechu_datelist,predict_day=28)
         muu_x_predict_list, muu_y_predict_list, predict_date = make_X_Predict_list(last_Day, muu_Xlist, muu_Ylist,
-                                                                                   muu_datelist, predict_day=28)
+                                                                                    muu_datelist, predict_day=28)
         manl_x_predict_list, manl_y_predict_list, predict_date = make_X_Predict_list(last_Day, manl_Xlist, manl_Ylist,
-                                                                                     manl_datelist, predict_day=28)
+                                                                                    manl_datelist, predict_day=28)
         gochu_x_predict_list, gochu_y_predict_list, predict_date = make_X_Predict_list(last_Day, gochu_Xlist,
-                                                                                       gochu_Ylist, gochu_datelist,
+                                                                                    gochu_Ylist, gochu_datelist,
                                                                                        predict_day=28)
         defa_x_predict_list, defa_y_predict_list, predict_date = make_X_Predict_list(last_Day, defa_Xlist, defa_Ylist,
-                                                                                     defa_datelist, predict_day=28)
+                                                                                    defa_datelist, predict_day=28)
         jjokpa_x_predict_list, jjokpa_y_predict_list, predict_date = make_X_Predict_list(last_Day, jjokpa_Xlist,
-                                                                                         jjokpa_Ylist, jjokpa_datelist,
+                                                                                    jjokpa_Ylist, jjokpa_datelist,
                                                                                          predict_day=28)
-        # print(predict_date)
-        # print(len(predict_date))
     except:
         print('데이터부족, 예측불가')
     print('make_Predict_parameter Done')
-def make_last_Day(sample_df):
-    # sample_df = pd.read_excel(DF_Directory + 'sample.xlsx')
-    sample_df['day'] = pd.to_datetime(sample_df['day'], format='%Y%m%d')
-    sample_df.set_index('day', inplace=True)
-    sample_datelist = make_datelist(sample_df)
-    last_Day = sample_datelist[-1]  # Last_day
-    print('make_last_Day Done')
-    return last_Day
+# def make_last_Day(sample_df):
+#     sample_df['day'] = pd.to_datetime(sample_df['day'], format='%Y%m%d')
+#     sample_df.set_index('day', inplace=True)
+#     sample_datelist = make_datelist(sample_df)
+#     last_Day = sample_datelist[-1]  # Last_day
+#     return last_Day
 
 def predict():
     global Predict_baechu_price,Predict_muu_price,Predict_defa_price,Predict_gochu_price,Predict_jjokpa_price,Predict_manl_price
@@ -218,11 +213,6 @@ def predict():
     Real_manl_price = manl_price_Sc.inverse_transform(manl_y_predict_list).flatten()
 
     print('predict Done')
-    # print('Real')
-    # print(Real_baechu_price)
-    #
-    # print('Predict')
-    # print(Predict_baechu_price)
 
 def make_predict_df():
     global PREDICT_baechu, original_baechu
@@ -238,15 +228,7 @@ def make_predict_df():
     original_baechu['day'] = pd.to_datetime(original_baechu['day'])
     original_baechu = original_baechu.loc[original_baechu['day'] >= predict_date[0]]
     original_baechu = original_baechu.loc[original_baechu['day'] <= predict_date[-1]]
-    # print(PREDICT_baechu)
-    # print(original_baechu)
 
-    # fig, axs = plt.subplots(figsize=(10, 5), constrained_layout=True)
-    # axs.set_title('baechu')
-    # sns.lineplot(original_baechu['day'], original_baechu['some'], color='b', label='Real_Price')
-    # sns.lineplot(PREDICT_baechu['Date'], PREDICT_baechu['price'], color='r', label='Predict')
-
-    print('-' * 100)
 
     PREDICT_muu = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_muu_price})
     PREDICT_muu['Date'] = pd.to_datetime(PREDICT_muu['Date'])
@@ -255,11 +237,6 @@ def make_predict_df():
     original_muu = original_muu.loc[original_muu['day'] >= predict_date[0]]
     original_muu = original_muu.loc[original_muu['day'] <= predict_date[-1]]
 
-    # fig, axs = plt.subplots(figsize=(10, 5), constrained_layout=True)
-    # axs.set_title('muu')
-    # sns.lineplot(original_muu['day'], original_muu['some'], color='b', label='Real_Price')
-    # sns.lineplot(PREDICT_muu['Date'], PREDICT_muu['price'], color='r', label='Predict')
-    # print('-' * 100)
 
     PREDICT_manl = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_manl_price})
     PREDICT_manl['Date'] = pd.to_datetime(PREDICT_manl['Date'])
@@ -268,12 +245,6 @@ def make_predict_df():
     original_manl = original_manl.loc[original_manl['day'] >= predict_date[0]]
     original_manl = original_manl.loc[original_manl['day'] <= predict_date[-1]]
 
-    # fig, axs = plt.subplots(figsize=(10, 5), constrained_layout=True)
-    # axs.set_title('manl')
-    # sns.lineplot(original_manl['day'], original_manl['some'], color='b', label='Real_Price')
-    # sns.lineplot(PREDICT_manl['Date'], PREDICT_manl['price'], color='r', label='Predict')
-    # print('-' * 100)
-
     PREDICT_gochu = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_gochu_price})
     PREDICT_gochu['Date'] = pd.to_datetime(PREDICT_gochu['Date'])
     original_gochu = gochu_df[['day', 'some']]
@@ -281,11 +252,6 @@ def make_predict_df():
     original_gochu = original_gochu.loc[original_gochu['day'] >= predict_date[0]]
     original_gochu = original_gochu.loc[original_gochu['day'] <= predict_date[-1]]
 
-    # fig, axs = plt.subplots(figsize=(10, 5), constrained_layout=True)
-    # axs.set_title('gochu')
-    # sns.lineplot(original_gochu['day'], original_gochu['some'], color='b', label='Real_Price')
-    # sns.lineplot(PREDICT_gochu['Date'], PREDICT_gochu['price'], color='r', label='Predict')
-    # print('-' * 100)
 
     PREDICT_defa = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_defa_price})
     PREDICT_defa['Date'] = pd.to_datetime(PREDICT_defa['Date'])
@@ -294,12 +260,6 @@ def make_predict_df():
     original_defa = original_defa.loc[original_defa['day'] >= predict_date[0]]
     original_defa = original_defa.loc[original_defa['day'] <= predict_date[-1]]
 
-    # fig, axs = plt.subplots(figsize=(10, 5), constrained_layout=True)
-    # axs.set_title('defa')
-    # sns.lineplot(original_defa['day'], original_defa['some'], color='b', label='Real_Price')
-    # sns.lineplot(PREDICT_defa['Date'], PREDICT_defa['price'], color='r', label='Predict')
-    # print('-' * 100)
-
     PREDICT_jjokpa = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_jjokpa_price})
     PREDICT_jjokpa['Date'] = pd.to_datetime(PREDICT_jjokpa['Date'])
     original_jjokpa = jjokpa_df[['day', 'some']]
@@ -307,11 +267,6 @@ def make_predict_df():
     original_jjokpa = original_jjokpa.loc[original_jjokpa['day'] >= predict_date[0]]
     original_jjokpa = original_jjokpa.loc[original_jjokpa['day'] <= predict_date[-1]]
 
-    # fig, axs = plt.subplots(figsize=(10, 5), constrained_layout=True)
-    # axs.set_title('jjokpa')
-    # sns.lineplot(original_jjokpa['day'], original_jjokpa['some'], color='b', label='Real_Price')
-    # sns.lineplot(PREDICT_jjokpa['Date'], PREDICT_jjokpa['price'], color='r', label='Predict')
-    # print('-' * 100)
     print('make_predict_df Done')
 def make_nonPredict_price():
     global gat_df,gool_df,minari_df,myulchi_df,senggang_df,seu_df,sogm_df
@@ -324,7 +279,6 @@ def make_nonPredict_price():
     seu_df = pd.read_excel(sub_price_path + 'seu.xlsx')
     sogm_df = pd.read_excel(sub_price_path + 'sogm.xlsx')
 
-    # gat_df['gimjang']=gat_df['gimjang'].astype('float32')
 
     gat_df.rename(columns={'day': 'Date'}, inplace=True)
     gool_df.rename(columns={'day': 'Date'}, inplace=True)
@@ -334,48 +288,31 @@ def make_nonPredict_price():
     seu_df.rename(columns={'day': 'Date'}, inplace=True)
     sogm_df.rename(columns={'day': 'Date'}, inplace=True)
 
-    print(gat_df.head())
     gat_df = gat_df.loc[gat_df['Date'] >= predict_date[0]]
     gat_df = gat_df.loc[gat_df['Date'] <= predict_date[-1]]
     gat_price = gat_df['gimjang'].tolist()
-    # print(gat_price)
-    # print(f'gat')
-    # print(gat_df)
     myulchi_df = myulchi_df.loc[myulchi_df['Date'] >= predict_date[0]]
     myulchi_df = myulchi_df.loc[myulchi_df['Date'] <= predict_date[-1]]
     myulchi_price = myulchi_df['gimjang'].tolist()
-    # print(f'myulchi')
-    # print(myulchi_df)
 
     gool_df = gool_df.loc[gool_df['Date'] >= predict_date[0]]
     gool_df = gool_df.loc[gool_df['Date'] <= predict_date[-1]]
     gool_price = gool_df['gimjang'].tolist()
-    # print(f'gool')
-    # print(gool_df)
 
     minari_df = minari_df.loc[minari_df['Date'] >= predict_date[0]]
     minari_df = minari_df.loc[minari_df['Date'] <= predict_date[-1]]
     minari_price = minari_df['gimjang'].tolist()
-    # print(f'minari')
-    # print(minari_df)
-
     senggang_df = senggang_df.loc[senggang_df['Date'] >= predict_date[0]]
     senggang_df = senggang_df.loc[senggang_df['Date'] <= predict_date[-1]]
     senggang_price = senggang_df['gimjang'].tolist()
-    # print(f'senggang')
-    # print(senggang_df)
 
     seu_df = seu_df.loc[seu_df['Date'] >= predict_date[0]]
     seu_df = seu_df.loc[seu_df['Date'] <= predict_date[-1]]
     seu_price = seu_df['gimjang'].tolist()
-    # print(f'seu')
-    # print(seu_df)
 
     sogm_df = sogm_df.loc[sogm_df['Date'] >= predict_date[0]]
     sogm_df = sogm_df.loc[sogm_df['Date'] <= predict_date[-1]]
     sogm_price = sogm_df['gimjang'].tolist()
-    # print(f'sogm')
-    print(sogm_df)
 
     # print(gat_df.info())
     print('make_nonPredict_price Done')
@@ -396,8 +333,6 @@ def Predict_Gimjang():
     PREDICT_defa['gimjang'] = PREDICT_defa['price'] * 2  # 대파 x 2
     PREDICT_jjokpa['gimjang'] = PREDICT_jjokpa['price'] * 2.4  # 쪽파 x 2.4
 
-    # print(original_manl)
-    # print(PREDICT_baechu['gimjang'][0])
     predict_price = []
     original_price = []
     for i in range(len(predict_date)):
@@ -435,8 +370,6 @@ def Predict_Gimjang():
         predict_sum_price += sogm_df['gimjang'].tolist()[i]
         original_price.append(original_sum_price)
         predict_price.append(predict_sum_price)
-    # print(original_price)
-    # print(predict_price)
 
     global PREDICT_GIMJANG
     PREDICT_GIMJANG = pd.DataFrame(
@@ -500,47 +433,10 @@ def home():
 @app.route('/result',methods=['POST','GET'])
 def result():
     if request.method=='POST':
-        baechu = request.files['baechu']
-        muu=request.files['muu']
-        manl=request.files['manl']
-        gochu=request.files['gochu']
-        defa=request.files['defa']
-        jjokpa=request.files['jjokpa']
-
-        print('files ok!\n')
-        upload_path='uploads'
-        if os.path.exists(upload_path):
-            shutil.rmtree(upload_path)
-        os.mkdir(upload_path)
-        baechu.save(f'./uploads/{secure_filename(baechu.filename)}')
-        muu.save(f'./uploads/{secure_filename(muu.filename)}')
-        manl.save(f'./uploads/{secure_filename(manl.filename)}')
-        gochu.save(f'./uploads/{secure_filename(gochu.filename)}')
-        defa.save(f'./uploads/{secure_filename(defa.filename)}')
-        jjokpa.save(f'./uploads/{secure_filename(jjokpa.filename)}')
-
-        baechu_xls = pd.read_excel(f'uploads/{secure_filename(baechu.filename)}',index_col=None)
-        muu_xls = pd.read_excel(f'uploads/{secure_filename(muu.filename)}',index_col=None)
-        manl_xls = pd.read_excel(f'uploads/{secure_filename(manl.filename)}',index_col=None)
-        gochu_xls = pd.read_excel(f'uploads/{secure_filename(gochu.filename)}',index_col=None)
-        defa_xls = pd.read_excel(f'uploads/{secure_filename(defa.filename)}',index_col=None)
-        jjokpa_xls = pd.read_excel(f'uploads/{secure_filename(jjokpa.filename)}',index_col=None)
-
-        print(baechu_xls.info())
-        xls_list=[baechu_xls,muu_xls,manl_xls,gochu_xls,defa_xls,jjokpa_xls]
-
-        last_Day=make_last_Day(baechu_xls)
+        last_Day='2019-10-15'
         print(f'last_Day:{last_Day}')
-        del baechu
-        del muu
-        del gochu
-        del manl
-        del jjokpa
-        del defa
 
-        # print(baechu_xls.info())
-        # print(baechu_xls.head())
-        make_df(xls_list)
+        make_df()
         make_Predict_parameter(last_Day)
         predict()
         make_predict_df()
@@ -569,7 +465,6 @@ def download_all():
         for root,dirs, files in os.walk('./summary/'):
             for file in files:
                 zipf.write('./summary/'+file)
-                #1. summary 채워주고 2. 여기와서 summary에 있는거 zip만들고 리턴, 없는데 오면 return
         zipf.close()
         shutil.rmtree('./summary')
         return send_file('summary.zip',
