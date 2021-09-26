@@ -166,7 +166,7 @@
 
         <!--Section: Content-->
         <section class="mb-5">
-          <h4 class="mb-5 text-center"><strong>향 후 4주간의 김장비용 예측 결과</strong></h4>
+          <h4 class="mb-5 text-center"><strong>향 후 4주간의 김장비용 예측 결과 </strong></h4><h5>   기준일자:{{status_day}}</h5>
 
           <div class="row d-flex justify-content-center">
             <div class="col-md-6">
@@ -189,7 +189,20 @@
                             ]
                         },
                         option:{
-                            responsive: false
+                            responsive: false,
+                                 xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '날짜'
+                                    },
+                                }],
+                                yAxes: [{
+                                display: true,
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: '비용'
+                                }
+                                }]
                         }
                         });
                     </script>

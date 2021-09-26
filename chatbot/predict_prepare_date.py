@@ -1,7 +1,7 @@
 import pandas as pd
 import zipfile
 import os
-from flask import send_file,url_for,redirect
+from flask import send_file, url_for, redirect
 import shutil
 
 from tensorflow.keras.models import load_model
@@ -15,16 +15,20 @@ from werkzeug.utils import secure_filename
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
 MODEL_SAVE_FOLDER_PATH = './model/'
-DF_Directory='./data_preprocessing/'
+DF_Directory = './data_preprocessing/'
+sub_price_path = DF_Directory + 'sub_price/'
+
+original_baechu_df = pd.read_excel(DF_Directory + 'baechu.xlsx')
+original_muu_df = pd.read_excel(DF_Directory + 'muu.xlsx')
+original_manl_df = pd.read_excel(DF_Directory + 'manl.xlsx')
+original_gochu_df = pd.read_excel(DF_Directory + 'gochu.xlsx')
+original_defa_df = pd.read_excel(DF_Directory + 'defa.xlsx')
+original_jjokpa_df = pd.read_excel(DF_Directory + 'jjokpa.xlsx')
+
+
 def loading_model():
-    global baechu_model
-    global muu_model
-    global gochu_model
-    global defa_model
-    global jjokpa_model
-    global manl_model
+    global baechu_model, muu_model, gochu_model, defa_model, jjokpa_model, manl_model
     baechu_model = load_model(MODEL_SAVE_FOLDER_PATH + 'baechu.h5')
     muu_model = load_model(MODEL_SAVE_FOLDER_PATH + 'muu.h5')
     defa_model = load_model(MODEL_SAVE_FOLDER_PATH + 'defa.h5')
@@ -48,14 +52,16 @@ def create_dataset(scaled_dataset):
     Xlist, Ylist = np.array(Xlist), np.array(Ylist)
     return Xlist, Ylist
 
+
 def make_datelist(df_copy):
     # DateList 얻기
-    timestamps=list(df_copy.index)
-    datelist=[]
+    timestamps = list(df_copy.index)
+    datelist = []
     for date in timestamps:
         datelist.append(str(date)[:10])
     # print(datelist)
     return datelist
+
 
 def make_set_Scaler(df):
     dataset_float = df.astype(float)
@@ -68,7 +74,9 @@ def make_set_Scaler(df):
     price_scaler.fit_transform(df_numpy[:, [-1]])  # price_Scaler
 
     return df_numpy_scaled, price_scaler  # return (scaling_df, price_scaler)
-def mdf(df_copy,xls,name):
+
+
+def mdf(df_copy, xls, name):
     # print(name)
     # print(df_copy.info())
     # print(xls.info())
@@ -84,45 +92,43 @@ def mdf(df_copy,xls,name):
                 break
     # df_copy.to_excel(f'Test/{name}')
 
-def make_df():      #df만들기
-    global baechu_df,muu_df,manl_df,gochu_df,defa_df,jjokpa_df
-    global baechu_df_copy,muu_df_copy,manl_df_copy,gochu_df_copy,defa_df_copy,jjokpa_df_copy
-    baechu_df = pd.read_excel(DF_Directory+'baechu.xlsx')
-    muu_df = pd.read_excel(DF_Directory+'muu.xlsx')
-    manl_df = pd.read_excel(DF_Directory+'manl.xlsx')
-    gochu_df = pd.read_excel(DF_Directory+'gochu.xlsx')
-    defa_df = pd.read_excel(DF_Directory+'defa.xlsx')
-    jjokpa_df = pd.read_excel(DF_Directory+'jjokpa.xlsx')
 
-    baechu_df_copy=baechu_df[:]
-    muu_df_copy=muu_df[:]
-    manl_df_copy=manl_df[:]
-    gochu_df_copy=gochu_df[:]
-    defa_df_copy=defa_df[:]
-    jjokpa_df_copy=jjokpa_df[:]
+def make_df():  # df만들기
+    global original_baechu_df, original_muu_df, original_manl_df, original_gochu_df, original_defa_df, original_jjokpa_df
+    global baechu_df, muu_df, manl_df, gochu_df, defa_df, jjokpa_df
+    global baechu_df_copy, muu_df_copy, manl_df_copy, gochu_df_copy, defa_df_copy, jjokpa_df_copy
 
-    df_copy_list=[baechu_df_copy,muu_df_copy,manl_df_copy,gochu_df_copy,defa_df_copy,jjokpa_df_copy]
-    # a=['baechu.xlsx','muu.xlsx','manl.xlsx','gochu.xlsx','defa.xlsx','jjokpa.xlsx']
-    # for df_copy,xls,name in zip(df_copy_list,xls_list,a):
-    #     mdf(df_copy,xls,name)
+    baechu_df = original_baechu_df.copy()
+    muu_df = original_muu_df.copy()
+    manl_df = original_manl_df.copy()
+    gochu_df = original_gochu_df.copy()
+    defa_df = original_defa_df.copy()
+    jjokpa_df = original_jjokpa_df.copy()
+    baechu_df_copy = baechu_df[:]
+    muu_df_copy = muu_df[:]
+    manl_df_copy = manl_df[:]
+    gochu_df_copy = gochu_df[:]
+    defa_df_copy = defa_df[:]
+    jjokpa_df_copy = jjokpa_df[:]
+
     # day => index로 변환하기(원본따로)
-    baechu_df_copy.set_index('day',inplace=True)
-    muu_df_copy.set_index('day',inplace=True)
-    manl_df_copy.set_index('day',inplace=True)
-    gochu_df_copy.set_index('day',inplace=True)
-    defa_df_copy .set_index('day',inplace=True)
-    jjokpa_df_copy.set_index('day',inplace=True)
+    baechu_df_copy.set_index('day', inplace=True)
+    muu_df_copy.set_index('day', inplace=True)
+    manl_df_copy.set_index('day', inplace=True)
+    gochu_df_copy.set_index('day', inplace=True)
+    defa_df_copy.set_index('day', inplace=True)
+    jjokpa_df_copy.set_index('day', inplace=True)
 
     # DateList 얻기
-    global baechu_datelist,muu_datelist,manl_datelist,gochu_datelist,defa_datelist,jjokpa_datelist
-    baechu_datelist=make_datelist(baechu_df_copy)
-    muu_datelist=make_datelist(muu_df_copy)
-    manl_datelist=make_datelist(manl_df_copy)
-    gochu_datelist=make_datelist(gochu_df_copy)
-    defa_datelist=make_datelist(defa_df_copy)
-    jjokpa_datelist=make_datelist(jjokpa_df_copy)
+    global baechu_datelist, muu_datelist, manl_datelist, gochu_datelist, defa_datelist, jjokpa_datelist
+    baechu_datelist = make_datelist(baechu_df_copy)
+    muu_datelist = make_datelist(muu_df_copy)
+    manl_datelist = make_datelist(manl_df_copy)
+    gochu_datelist = make_datelist(gochu_df_copy)
+    defa_datelist = make_datelist(defa_df_copy)
+    jjokpa_datelist = make_datelist(jjokpa_df_copy)
 
-    global baechu_scaled,baechu_price_Sc,muu_scaled, muu_price_Sc,manl_scaled, manl_price_Sc,gochu_scaled, gochu_price_Sc,defa_scaled, defa_price_Sc,jjokpa_scaled, jjokpa_price_Sc
+    global baechu_scaled, baechu_price_Sc, muu_scaled, muu_price_Sc, manl_scaled, manl_price_Sc, gochu_scaled, gochu_price_Sc, defa_scaled, defa_price_Sc, jjokpa_scaled, jjokpa_price_Sc
     baechu_scaled, baechu_price_Sc = make_set_Scaler(baechu_df_copy)
     muu_scaled, muu_price_Sc = make_set_Scaler(muu_df_copy)
     manl_scaled, manl_price_Sc = make_set_Scaler(manl_df_copy)
@@ -130,7 +136,7 @@ def make_df():      #df만들기
     defa_scaled, defa_price_Sc = make_set_Scaler(defa_df_copy)
     jjokpa_scaled, jjokpa_price_Sc = make_set_Scaler(jjokpa_df_copy)
 
-    global baechu_Xlist, baechu_Ylist,muu_Xlist, muu_Ylist,manl_Xlist, manl_Ylist,gochu_Xlist, gochu_Ylist,defa_Xlist,defa_Ylist,jjokpa_Xlist,jjokpa_Ylist
+    global baechu_Xlist, baechu_Ylist, muu_Xlist, muu_Ylist, manl_Xlist, manl_Ylist, gochu_Xlist, gochu_Ylist, defa_Xlist, defa_Ylist, jjokpa_Xlist, jjokpa_Ylist
     baechu_Xlist, baechu_Ylist = create_dataset(baechu_scaled)
     muu_Xlist, muu_Ylist = create_dataset(muu_scaled)
     manl_Xlist, manl_Ylist = create_dataset(manl_scaled)
@@ -138,56 +144,62 @@ def make_df():      #df만들기
     defa_Xlist, defa_Ylist = create_dataset(defa_scaled)
     jjokpa_Xlist, jjokpa_Ylist = create_dataset(jjokpa_scaled)
     print('make_df Done')
-def make_X_Predict_list(day,Xlist,Ylist,datelist,predict_day):
-    X_Predict_list=None
-    n=-1
-    for index,date in enumerate(datelist[::-1],start=1):
-        if day==date:
-            n=index
+
+
+def make_X_Predict_list(day, Xlist, Ylist, datelist, predict_day):
+    X_Predict_list = None
+    n = -1
+    for index, date in enumerate(datelist[::-1], start=1):
+        if day == date:
+            n = index
             break
-    if n==-1:
+    if n == -1:
         print('존재하지 않는 날짜')
     else:
         print(f'n번쨰에 존재:{n}')
-        index=len(Xlist)-n+1    #하나 앞에서부터 predict_day만큼 가져가기
-        if index+predict_day>len(Xlist):
+        index = len(Xlist) - n + 1  # 하나 앞에서부터 predict_day만큼 가져가기
+        if index + predict_day > len(Xlist):
             print('데이터 부족으로 인한 예측불가')
         else:
-            length_datelist=len(datelist)-n+1
-            datelist_copy=datelist[length_datelist:length_datelist+predict_day]
+            length_datelist = len(datelist) - n + 1
+            datelist_copy = datelist[length_datelist:length_datelist + predict_day]
             # print(datelist)
 
-            X_Predict_list=Xlist[index:index+predict_day]
-            Y_Real_price_list=Ylist[index:index+predict_day]
+            X_Predict_list = Xlist[index:index + predict_day]
+            Y_Real_price_list = Ylist[index:index + predict_day]
             # print(f'index:index+predict_day:{index},{index+predict_day},len(Xlist):{len(Xlist)}')
-    return X_Predict_list,Y_Real_price_list,datelist_copy
-    #1.day가 각자의 datelist[::-1]에서 몇번째 있는지 찾는다. =>n추출
-    #2.Xlist[::-1]에서
+    return X_Predict_list, Y_Real_price_list, datelist_copy
+    # 1.day가 각자의 datelist[::-1]에서 몇번째 있는지 찾는다. =>n추출
+    # 2.Xlist[::-1]에서
+
 
 def make_Predict_parameter(last_Day):
     # Last_day + 28일째 예측
     n_future = 28
-    global baechu_x_predict_list, baechu_y_predict_list,muu_x_predict_list, muu_y_predict_list,manl_x_predict_list, manl_y_predict_list
-    global gochu_x_predict_list, gochu_y_predict_list,defa_x_predict_list, defa_y_predict_list,jjokpa_x_predict_list, jjokpa_y_predict_list
+    global baechu_x_predict_list, baechu_y_predict_list, muu_x_predict_list, muu_y_predict_list, manl_x_predict_list, manl_y_predict_list
+    global gochu_x_predict_list, gochu_y_predict_list, defa_x_predict_list, defa_y_predict_list, jjokpa_x_predict_list, jjokpa_y_predict_list
     global predict_date
     try:
         baechu_x_predict_list, baechu_y_predict_list, predict_date = make_X_Predict_list(last_Day, baechu_Xlist,
-                                                                                    baechu_Ylist, baechu_datelist,predict_day=28)
+                                                                                         baechu_Ylist, baechu_datelist,
+                                                                                         predict_day=28)
         muu_x_predict_list, muu_y_predict_list, predict_date = make_X_Predict_list(last_Day, muu_Xlist, muu_Ylist,
-                                                                                    muu_datelist, predict_day=28)
+                                                                                   muu_datelist, predict_day=28)
         manl_x_predict_list, manl_y_predict_list, predict_date = make_X_Predict_list(last_Day, manl_Xlist, manl_Ylist,
-                                                                                    manl_datelist, predict_day=28)
+                                                                                     manl_datelist, predict_day=28)
         gochu_x_predict_list, gochu_y_predict_list, predict_date = make_X_Predict_list(last_Day, gochu_Xlist,
-                                                                                    gochu_Ylist, gochu_datelist,
+                                                                                       gochu_Ylist, gochu_datelist,
                                                                                        predict_day=28)
         defa_x_predict_list, defa_y_predict_list, predict_date = make_X_Predict_list(last_Day, defa_Xlist, defa_Ylist,
-                                                                                    defa_datelist, predict_day=28)
+                                                                                     defa_datelist, predict_day=28)
         jjokpa_x_predict_list, jjokpa_y_predict_list, predict_date = make_X_Predict_list(last_Day, jjokpa_Xlist,
-                                                                                    jjokpa_Ylist, jjokpa_datelist,
+                                                                                         jjokpa_Ylist, jjokpa_datelist,
                                                                                          predict_day=28)
     except:
         print('데이터부족, 예측불가')
     print('make_Predict_parameter Done')
+
+
 # def make_last_Day(sample_df):
 #     sample_df['day'] = pd.to_datetime(sample_df['day'], format='%Y%m%d')
 #     sample_df.set_index('day', inplace=True)
@@ -196,8 +208,8 @@ def make_Predict_parameter(last_Day):
 #     return last_Day
 
 def predict():
-    global Predict_baechu_price,Predict_muu_price,Predict_defa_price,Predict_gochu_price,Predict_jjokpa_price,Predict_manl_price
-    global Real_baechu_price,Real_muu_price,Real_defa_price,Real_gochu_price,Real_jjokpa_price,Real_manl_price
+    global Predict_baechu_price, Predict_muu_price, Predict_defa_price, Predict_gochu_price, Predict_jjokpa_price, Predict_manl_price
+    global Real_baechu_price, Real_muu_price, Real_defa_price, Real_gochu_price, Real_jjokpa_price, Real_manl_price
     Predict_baechu_price = baechu_price_Sc.inverse_transform(baechu_model.predict(baechu_x_predict_list)).flatten()
     Predict_muu_price = muu_price_Sc.inverse_transform(muu_model.predict(muu_x_predict_list)).flatten()
     Predict_defa_price = defa_price_Sc.inverse_transform(defa_model.predict(defa_x_predict_list)).flatten()
@@ -214,6 +226,7 @@ def predict():
 
     print('predict Done')
 
+
 def make_predict_df():
     global PREDICT_baechu, original_baechu
     global PREDICT_muu, original_muu
@@ -229,14 +242,12 @@ def make_predict_df():
     original_baechu = original_baechu.loc[original_baechu['day'] >= predict_date[0]]
     original_baechu = original_baechu.loc[original_baechu['day'] <= predict_date[-1]]
 
-
     PREDICT_muu = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_muu_price})
     PREDICT_muu['Date'] = pd.to_datetime(PREDICT_muu['Date'])
     original_muu = muu_df[['day', 'some']]
     original_muu['day'] = pd.to_datetime(original_muu['day'])
     original_muu = original_muu.loc[original_muu['day'] >= predict_date[0]]
     original_muu = original_muu.loc[original_muu['day'] <= predict_date[-1]]
-
 
     PREDICT_manl = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_manl_price})
     PREDICT_manl['Date'] = pd.to_datetime(PREDICT_manl['Date'])
@@ -251,7 +262,6 @@ def make_predict_df():
     original_gochu['day'] = pd.to_datetime(original_gochu['day'])
     original_gochu = original_gochu.loc[original_gochu['day'] >= predict_date[0]]
     original_gochu = original_gochu.loc[original_gochu['day'] <= predict_date[-1]]
-
 
     PREDICT_defa = pd.DataFrame({'Date': pd.Series(predict_date), 'price': Predict_defa_price})
     PREDICT_defa['Date'] = pd.to_datetime(PREDICT_defa['Date'])
@@ -268,17 +278,20 @@ def make_predict_df():
     original_jjokpa = original_jjokpa.loc[original_jjokpa['day'] <= predict_date[-1]]
 
     print('make_predict_df Done')
-def make_nonPredict_price():
-    global gat_df,gool_df,minari_df,myulchi_df,senggang_df,seu_df,sogm_df
-    sub_price_path = DF_Directory+'sub_price/'
-    gat_df = pd.read_excel(sub_price_path + 'gat.xlsx')
-    gool_df = pd.read_excel(sub_price_path + 'gool.xlsx')
-    minari_df = pd.read_excel(sub_price_path + 'minari.xlsx')
-    myulchi_df = pd.read_excel(sub_price_path + 'myulchi.xlsx')
-    senggang_df = pd.read_excel(sub_price_path + 'senggang.xlsx')
-    seu_df = pd.read_excel(sub_price_path + 'seu.xlsx')
-    sogm_df = pd.read_excel(sub_price_path + 'sogm.xlsx')
 
+
+def make_nonPredict_price():
+    global gat_df, gool_df, minari_df, myulchi_df, senggang_df, seu_df, sogm_df, senggang_df
+    global original_gat_df, original_gool_df, original_minari_df, original_myulchi_df, original_senggang_df, original_seu_df
+    global original_sogm_df, original_senggang_df
+
+    gat_df = original_gat_df.copy()
+    gool_df = original_gool_df.copy()
+    minari_df = original_minari_df.copy()
+    myulchi_df = original_myulchi_df.copy()
+    senggang_df = original_senggang_df.copy()
+    seu_df = original_seu_df.copy()
+    sogm_df = original_sogm_df.copy()
 
     gat_df.rename(columns={'day': 'Date'}, inplace=True)
     gool_df.rename(columns={'day': 'Date'}, inplace=True)
@@ -316,6 +329,8 @@ def make_nonPredict_price():
 
     # print(gat_df.info())
     print('make_nonPredict_price Done')
+
+
 def Predict_Gimjang():
     # ----------------------original---------------------
     original_baechu['gimjang'] = original_baechu['some'] * 20  # 배추 x 20포기
@@ -378,62 +393,76 @@ def Predict_Gimjang():
     print('predict gimjang Done')
     return PREDICT_GIMJANG
 
-def Gimjang_Total():
-    gat_price=gat_df['gimjang'].tolist()
-    gool_price=gool_df['gimjang'].tolist()
-    minari_price=minari_df['gimjang'].tolist()
-    myulchi_price=myulchi_df['gimjang'].tolist()
-    senggang_price=senggang_df['gimjang'].tolist()
-    seu_price=seu_df['gimjang'].tolist()
-    sogm_price=sogm_df['gimjang'].tolist()
 
-    PREDICT_GIMJANG_TOTAL = pd.DataFrame({'Date':PREDICT_baechu['Date']})
+def Gimjang_Total():
+    gat_price = gat_df['gimjang'].tolist()
+    gool_price = gool_df['gimjang'].tolist()
+    minari_price = minari_df['gimjang'].tolist()
+    myulchi_price = myulchi_df['gimjang'].tolist()
+    senggang_price = senggang_df['gimjang'].tolist()
+    seu_price = seu_df['gimjang'].tolist()
+    sogm_price = sogm_df['gimjang'].tolist()
+
+    PREDICT_GIMJANG_TOTAL = pd.DataFrame({'Date': PREDICT_baechu['Date']})
     PREDICT_GIMJANG_TOTAL
-    predict_baechu=PREDICT_baechu['gimjang'].tolist()
-    predict_muu=PREDICT_muu['gimjang'].tolist()
-    predict_gochu=PREDICT_gochu['gimjang'].tolist()
-    predict_manl=PREDICT_manl['gimjang'].tolist()
-    predict_defa=PREDICT_defa['gimjang'].tolist()
-    predict_jjokpa=PREDICT_jjokpa['gimjang'].tolist()
+    predict_baechu = PREDICT_baechu['gimjang'].tolist()
+    predict_muu = PREDICT_muu['gimjang'].tolist()
+    predict_gochu = PREDICT_gochu['gimjang'].tolist()
+    predict_manl = PREDICT_manl['gimjang'].tolist()
+    predict_defa = PREDICT_defa['gimjang'].tolist()
+    predict_jjokpa = PREDICT_jjokpa['gimjang'].tolist()
 
     # senggang_price=senggang_price,seu_price=seu_price,sogm_price=sogm_price
-    PREDICT_GIMJANG_TOTAL=PREDICT_GIMJANG_TOTAL.assign(baechu=predict_baechu,muu=predict_muu,gochu=predict_gochu,manl=predict_manl,defa=predict_defa,jjokpa=predict_jjokpa,gat_price=gat_price,gool_price=gool_price,minari_price=minari_price,myulchi_price=myulchi_price,senggang_price=senggang_price,seu_price=seu_price,sogm_price=sogm_price)
-    PREDICT_GIMJANG_TOTAL=PREDICT_GIMJANG_TOTAL.assign(Total=PREDICT_GIMJANG['Predict_Sum'].tolist())
+    PREDICT_GIMJANG_TOTAL = PREDICT_GIMJANG_TOTAL.assign(baechu=predict_baechu, muu=predict_muu, gochu=predict_gochu,
+                                                         manl=predict_manl, defa=predict_defa, jjokpa=predict_jjokpa,
+                                                         gat_price=gat_price, gool_price=gool_price,
+                                                         minari_price=minari_price, myulchi_price=myulchi_price,
+                                                         senggang_price=senggang_price, seu_price=seu_price,
+                                                         sogm_price=sogm_price)
+    PREDICT_GIMJANG_TOTAL = PREDICT_GIMJANG_TOTAL.assign(Total=PREDICT_GIMJANG['Predict_Sum'].tolist())
     PREDICT_GIMJANG_TOTAL
 
-    original_GIMJANG_TOTAL = pd.DataFrame({'Date':original_baechu['day']})
+    original_GIMJANG_TOTAL = pd.DataFrame({'Date': original_baechu['day']})
     original_GIMJANG_TOTAL
-    Ori_baechu=original_baechu['gimjang'].tolist()
-    Ori_muu=original_muu['gimjang'].tolist()
-    Ori_gochu=original_gochu['gimjang'].tolist()
-    Ori_manl=original_manl['gimjang'].tolist()
-    Ori_defa=original_defa['gimjang'].tolist()
-    Ori_jjokpa=original_jjokpa['gimjang'].tolist()
-    original_GIMJANG_TOTAL=original_GIMJANG_TOTAL.assign(baechu=Ori_baechu,muu=Ori_muu,gochu=Ori_gochu,manl=Ori_manl,defa=Ori_defa,jjokpa=Ori_jjokpa,gat_price=gat_price,gool_price=gool_price,minari_price=minari_price,myulchi_price=myulchi_price,senggang_price=senggang_price,seu_price=seu_price,sogm_price=sogm_price)
-    original_GIMJANG_TOTAL=original_GIMJANG_TOTAL.assign(Total=PREDICT_GIMJANG['Origin_Sum'].tolist())
+    Ori_baechu = original_baechu['gimjang'].tolist()
+    Ori_muu = original_muu['gimjang'].tolist()
+    Ori_gochu = original_gochu['gimjang'].tolist()
+    Ori_manl = original_manl['gimjang'].tolist()
+    Ori_defa = original_defa['gimjang'].tolist()
+    Ori_jjokpa = original_jjokpa['gimjang'].tolist()
+    original_GIMJANG_TOTAL = original_GIMJANG_TOTAL.assign(baechu=Ori_baechu, muu=Ori_muu, gochu=Ori_gochu,
+                                                           manl=Ori_manl, defa=Ori_defa, jjokpa=Ori_jjokpa,
+                                                           gat_price=gat_price, gool_price=gool_price,
+                                                           minari_price=minari_price, myulchi_price=myulchi_price,
+                                                           senggang_price=senggang_price, seu_price=seu_price,
+                                                           sogm_price=sogm_price)
+    original_GIMJANG_TOTAL = original_GIMJANG_TOTAL.assign(Total=PREDICT_GIMJANG['Origin_Sum'].tolist())
 
-    TOTAL_SAVE_PATH='./summary/'
+    TOTAL_SAVE_PATH = './summary/'
     if not os.path.isdir(TOTAL_SAVE_PATH):
         os.mkdir(TOTAL_SAVE_PATH)
     else:
         shutil.rmtree((TOTAL_SAVE_PATH))
         os.mkdir(TOTAL_SAVE_PATH)
-    PREDICT_GIMJANG_TOTAL.to_excel(TOTAL_SAVE_PATH+'PPEDICT_GIMJANG_TOTAL.xlsx',index=False)
-    original_GIMJANG_TOTAL.to_excel(TOTAL_SAVE_PATH + 'original_GIMJANG_TOTAL.xlsx',index=False)
+    PREDICT_GIMJANG_TOTAL.to_excel(TOTAL_SAVE_PATH + 'PPEDICT_GIMJANG_TOTAL.xlsx', index=False)
+    original_GIMJANG_TOTAL.to_excel(TOTAL_SAVE_PATH + 'original_GIMJANG_TOTAL.xlsx', index=False)
     # return PREDICT_GIMJANG_TOTAL,original_GIMJANG_TOTAL
 
 
 app = Flask(__name__)
+
+
 # 메인 페이지 라우팅
 @app.route("/")
 @app.route("/index")
 def home():
     return flask.render_template('index.html')
 
-@app.route('/result',methods=['POST','GET'])
+
+@app.route('/result', methods=['POST', 'GET'])
 def result():
-    if request.method=='POST':
-        last_Day='2019-10-15'
+    if request.method == 'POST':
+        last_Day = '2019-10-15'
         print(f'last_Day:{last_Day}')
 
         make_df()
@@ -441,7 +470,7 @@ def result():
         predict()
         make_predict_df()
         make_nonPredict_price()
-        PREDICT_GIMJANG=Predict_Gimjang()
+        PREDICT_GIMJANG = Predict_Gimjang()
         Gimjang_Total()
 
         # PREDICT_GIMJANG
@@ -449,10 +478,12 @@ def result():
         Origin_price = PREDICT_GIMJANG['Origin_Sum'].astype('int')
         Predict_price = PREDICT_GIMJANG['Predict_Sum'].astype('int')
         labels = labels.tolist()
-        Origin_price=Origin_price.tolist()
-        Predict_price=Predict_price.tolist()
+        Origin_price = Origin_price.tolist()
+        Predict_price = Predict_price.tolist()
 
-        return flask.render_template('index.html',labels=labels,Origin_price=Origin_price,Predict_price=Predict_price)
+        return flask.render_template('index.html', labels=labels, Origin_price=Origin_price,
+                                     Predict_price=Predict_price, status_day=last_Day)
+
 
 @app.route('/download_all')
 def download_all():
@@ -461,19 +492,36 @@ def download_all():
     except OSError:
         pass
     if os.path.isdir('./summary'):
-        zipf = zipfile.ZipFile('summary.zip','w', zipfile.ZIP_DEFLATED)
-        for root,dirs, files in os.walk('./summary/'):
+        zipf = zipfile.ZipFile('summary.zip', 'w', zipfile.ZIP_DEFLATED)
+        for root, dirs, files in os.walk('./summary/'):
             for file in files:
-                zipf.write('./summary/'+file)
+                zipf.write('./summary/' + file)
         zipf.close()
         shutil.rmtree('./summary')
         return send_file('summary.zip',
-                mimetype = 'zip',
-                attachment_filename= 'summary.zip',
-                as_attachment = True)
+                         mimetype='zip',
+                         attachment_filename='summary.zip',
+                         as_attachment=True)
     else:
         return redirect(url_for('home'))
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     loading_model()
-    app.run(debug=True)
+
+    original_baechu_df = pd.read_excel(DF_Directory + 'baechu.xlsx')
+    original_muu_df = pd.read_excel(DF_Directory + 'muu.xlsx')
+    original_manl_df = pd.read_excel(DF_Directory + 'manl.xlsx')
+    original_gochu_df = pd.read_excel(DF_Directory + 'gochu.xlsx')
+    original_defa_df = pd.read_excel(DF_Directory + 'defa.xlsx')
+    original_jjokpa_df = pd.read_excel(DF_Directory + 'jjokpa.xlsx')
+    print('df ready done')
+    original_gat_df = pd.read_excel(sub_price_path + 'gat.xlsx')
+    original_gool_df = pd.read_excel(sub_price_path + 'gool.xlsx')
+    original_minari_df = pd.read_excel(sub_price_path + 'minari.xlsx')
+    original_myulchi_df = pd.read_excel(sub_price_path + 'myulchi.xlsx')
+    original_senggang_df = pd.read_excel(sub_price_path + 'senggang.xlsx')
+    original_seu_df = pd.read_excel(sub_price_path + 'seu.xlsx')
+    original_sogm_df = pd.read_excel(sub_price_path + 'sogm.xlsx')
+    print('none pre_df done')
+    app.run(host='0.0.0.0', debug=True)
